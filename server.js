@@ -238,12 +238,12 @@ io.on('connection', (socket) => {
     const game = games.get(roomId);
     
     if (!game) {
-      socket.emit('error', 'Game not found');
+      socket.emit('error', 'Game nahi mila');
       return;
     }
     
     if (game.gameState !== 'waiting') {
-      socket.emit('error', 'Game already in progress');
+      socket.emit('error', 'Game pehle se chal raha hai');
       return;
     }
     

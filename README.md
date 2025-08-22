@@ -27,6 +27,8 @@ A real-time multiplayer drawing and guessing game inspired by skribbl.io, built 
 6. **Score Points**: Earn points for correct guesses and time bonuses
 7. **Complete Rounds**: Play through 3 rounds with different words and drawers
 
+**Note**: The web UI is presented in Roman‑Urdu (Latin script) — labels, notifications and chat/system messages are shown in Roman‑Urdu.
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -123,62 +125,62 @@ const words = [
 Modify these values in `server.js`:
 
 ```javascript
-// In the Game class constructor
-this.maxRounds = 3;        // Number of rounds per game
 this.timeLeft = 60;        // Seconds per round
-```
-
+```s.maxRounds = 3;        // Number of rounds per game
+this.timeLeft = 60;        // Seconds per round
 ### Styling Changes
 Edit `public/styles.css` to customize colors, fonts, and layout.
+### Styling Changes
+## Troubleshootings.css` to customize colors, fonts, and layout.
 
-## Troubleshooting
-
-### Common Issues
+### Common Issuesg
 
 1. **Port already in use**
    ```bash
    # Change port in server.js or kill existing process
    lsof -ti:3000 | xargs kill -9
-   ```
-
+   ```hange port in server.js or kill existing process
+   lsof -ti:3000 | xargs kill -9
 2. **Dependencies not installed**
    ```bash
+   npm installies not installed**
+   ```bash
    npm install
-   ```
-
 3. **Canvas not working**
    - Ensure JavaScript is enabled
    - Check browser console for errors
-   - Try refreshing the page
-
-### Browser Compatibility
+   - Try refreshing the pageabled
+   - Check browser console for errors
+### Browser Compatibilityage
 - Chrome (recommended)
-- Firefox
-- Safari
-- Edge
+- Firefoxer Compatibility
+- Safari (recommended)
+- Edgefox
 - Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Contributing
+- Edge
+## Contributingrs (iOS Safari, Chrome Mobile)
 
 Feel free to contribute improvements:
 1. Fork the project
-2. Create a feature branch
+2. Create a feature branchprovements:
 3. Make your changes
-4. Test thoroughly
+4. Test thoroughlye branch
 5. Submit a pull request
-
-## License
+4. Test thoroughly
+## Licensea pull request
 
 This project is open source and available under the MIT License.
 
-## Support
+## Supportct is open source and available under the MIT License.
 
 If you encounter any issues or have questions:
 1. Check the troubleshooting section above
 2. Review the browser console for error messages
 3. Ensure all dependencies are properly installed
-4. Verify Node.js version compatibility
+4. Verify Node.js version compatibility messages
+3. Ensure all dependencies are properly installed
+---Verify Node.js version compatibility
 
----
+**Enjoy playing Skribbl Clone! 🎨🎮**
 
 **Enjoy playing Skribbl Clone! 🎨🎮**

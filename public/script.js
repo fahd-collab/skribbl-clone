@@ -52,7 +52,7 @@ const elements = {
 function init() {
     setupEventListeners();
     setupCanvas();
-    showNotification('Welcome to Skribbl Clone!', 'info');
+    showNotification('Khushamdeed — Skribbl Clone mein aapka khair maqdam hai!', 'info');
 }
 
 // Setup event listeners
@@ -185,7 +185,7 @@ function clearCanvas() {
 function createGame() {
     const playerName = elements.playerName.value.trim();
     if (!playerName) {
-        showNotification('Please enter your name', 'error');
+        showNotification('Barah-e-karam apna naam darj karein', 'error');
         return;
     }
     
@@ -199,7 +199,7 @@ function createGame() {
 function showJoinModal() {
     const playerName = elements.playerName.value.trim();
     if (!playerName) {
-        showNotification('Please enter your name', 'error');
+        showNotification('Barah-e-karam apna naam darj karein', 'error');
         return;
     }
     
@@ -216,7 +216,7 @@ function joinGame() {
     const playerName = elements.playerName.value.trim();
     
     if (!roomCode) {
-        showNotification('Please enter a room code', 'error');
+        showNotification('Barah-e-karam room code darj karein', 'error');
         return;
     }
     
@@ -252,7 +252,7 @@ function sendChat() {
     }
     
     // Add message to chat
-    addChatMessage('You', message, 'user');
+    addChatMessage('Aap', message, 'user');
     elements.chatInput.value = '';
 }
 
@@ -279,33 +279,28 @@ function connectSocket() {
         currentGame = { ...gameData, roomId };
         showScreen('lobby');
         updateLobby();
-        showNotification(`Game created! Room code: ${roomId}`, 'success');
+        showNotification(`Game ban gaya! Room code: ${roomId}`, 'success');
     });
     
     socket.on('playerJoined', ({ playerName, gameData }) => {
         currentGame = gameData;
         updateLobby();
-        addChatMessage('System', `${playerName} joined the game`, 'system');
-        showNotification(`${playerName} joined the game`, 'info');
+        addChatMessage('Nizaam', `${playerName} ne game join kiya`, 'system');
+        showNotification(`${playerName} ne game join kiya`, 'info');
     });
     
     socket.on('playerLeft', ({ playerName, gameData }) => {
         currentGame = gameData;
         updateLobby();
-        addChatMessage('System', `${playerName} left the game`, 'system');
-        showNotification(`${playerName} left the game`, 'info');
+        addChatMessage('Nizaam', `${playerName} ne game chhoda`, 'system');
+        showNotification(`${playerName} ne game chhoda`, 'info');
     });
     
     socket.on('gameStarted', (gameData) => {
         currentGame = gameData;
         showScreen('game');
         updateGame();
-        
-        // Reset canvas to white background when game starts
-        drawingContext.fillStyle = '#ffffff';
-        drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
-        
-        showNotification('Game started!', 'success');
+        showNotification('Game shuru ho gaya!', 'success');
     });
     
     socket.on('draw', ({ x, y, lastX: remoteLastX, lastY: remoteLastY, drawing }) => {
@@ -338,9 +333,9 @@ function connectSocket() {
     });
     
     socket.on('wordGuessed', ({ playerName, word, score, timeBonus }) => {
-        addChatMessage(playerName, `Correct! "${word}" (+${score} points, +${timeBonus} time bonus)`, 'correct');
+        addChatMessage(playerName, `Sahih! "${word}" (+${score} points, +${timeBonus} time bonus)`, 'correct');
         updateGame();
-        showNotification(`${playerName} guessed correctly!`, 'success');
+        showNotification(`${playerName} ne sahi jawab diya!`, 'success');
     });
     
     socket.on('roundEnded', (gameData) => {
@@ -350,12 +345,7 @@ function connectSocket() {
             updateGameOver();
         } else {
             updateGame();
-            
-            // Reset canvas to white background for new round
-            drawingContext.fillStyle = '#ffffff';
-            drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
-            
-            showNotification('Round ended!', 'info');
+            showNotification('Round khatam hua!', 'info');
         }
     });
     
@@ -367,11 +357,12 @@ function connectSocket() {
     });
     
     socket.on('error', (message) => {
+        // server sends messages (now in Roman Urdu) — display as-is
         showNotification(message, 'error');
     });
     
     socket.on('disconnect', () => {
-        showNotification('Disconnected from server', 'error');
+        showNotification('Server se talaq toot gaya', 'error');
         currentGame = null;
     });
 }
@@ -485,6 +476,15 @@ function showNotification(message, type = 'info') {
     notification.textContent = message;
     
     document.querySelector('.notifications').appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);
     
     // Auto remove after 5 seconds
     setTimeout(() => {

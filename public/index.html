@@ -1,3 +1,12 @@
+<!-- MERGE NOTE:
+ Branch: roman-urdu
+ To apply: commit your changes, push branch, open PR (roman-urdu → main), resolve conflicts, then merge.
+ Quick commands:
+   git add -A
+   git commit -m "UI: Roman‑Urdu"
+   git checkout -b roman-urdu
+   git push -u origin roman-urdu
+ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,21 +29,21 @@
                         <div class="logo-line"></div>
                     </div>
                     <h1>Skribbl Clone</h1>
-                    <p>Unlimited Players • Real-time Drawing • Word Guessing</p>
+                    <p>Unlimited players • Waqeaati drawing • Lafz ka andaza</p>
                 </div>
                 
                 <div class="welcome-form">
                     <div class="input-group">
-                        <label for="playerName">Your Name</label>
-                        <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+                        <label for="playerName">Aapka Naam</label>
+                        <input type="text" id="playerName" placeholder="Apna naam darj karein" maxlength="20">
                     </div>
                     
                     <div class="welcome-buttons">
                         <button id="createGameBtn" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Create New Game
+                            <i class="fas fa-plus"></i> Naya Game Banayein
                         </button>
                         <button id="joinGameBtn" class="btn btn-secondary">
-                            <i class="fas fa-sign-in-alt"></i> Join Existing Game
+                            <i class="fas fa-sign-in-alt"></i> Game Join Karein
                         </button>
                     </div>
                 </div>
@@ -44,14 +53,14 @@
         <!-- Join Game Modal -->
         <div id="joinModal" class="modal">
             <div class="modal-content">
-                <h2>Join Game</h2>
+                <h2>Game Join Karein</h2>
                 <div class="input-group">
                     <label for="roomCode">Room Code</label>
-                    <input type="text" id="roomCode" placeholder="Enter 6-digit room code" maxlength="6" pattern="[A-Z0-9]{6}">
+                    <input id="roomCode" placeholder="6-akhraf wala code darj karein">
                 </div>
                 <div class="modal-buttons">
-                    <button id="confirmJoinBtn" class="btn btn-primary">Join Game</button>
-                    <button id="cancelJoinBtn" class="btn btn-secondary">Cancel</button>
+                    <button id="confirmJoinBtn" class="btn btn-primary">کھیل میں شامل ہوں</button>
+                    <button id="cancelJoinBtn" class="btn btn-secondary">کینسل کریں</button>
                 </div>
             </div>
         </div>
@@ -64,13 +73,13 @@
                     <div class="room-info">
                         <span class="room-code">Room: <strong id="roomCodeDisplay"></strong></span>
                         <button id="copyRoomCodeBtn" class="btn btn-small">
-                            <i class="fas fa-copy"></i> Copy
+                            <i class="fas fa-copy"></i> Code Copy Karein
                         </button>
                     </div>
                 </div>
                 
                 <div class="players-section">
-                    <h3>Players (<span id="playerCount">1</span>)</h3>
+                    <h3>Khilari (<span id="playerCount">1</span>)</h3>
                     <div id="playersList" class="players-list">
                         <!-- Players will be added here -->
                     </div>
@@ -78,10 +87,10 @@
                 
                 <div class="lobby-controls">
                     <button id="startGameBtn" class="btn btn-primary" disabled>
-                        <i class="fas fa-play"></i> Start Game (Need 2+ Players)
+                        <i class="fas fa-play"></i> Game Shuru Karein (Kam az kam 2 khilari)
                     </button>
                     <button id="leaveLobbyBtn" class="btn btn-secondary">
-                        <i class="fas fa-sign-out-alt"></i> Leave Lobby
+                        <i class="fas fa-sign-out-alt"></i> Lobby Chhor Dein
                     </button>
                 </div>
             </div>
@@ -93,10 +102,10 @@
                 <div class="game-header">
                     <div class="game-info">
                         <span class="round-info">Round <span id="currentRound">1</span>/<span id="maxRounds">3</span></span>
-                        <span class="time-left">Time: <span id="timeLeft">60</span>s</span>
+                        <span class="time-left">Waqt: <span id="timeLeft">60</span> sec</span>
                     </div>
                     <div class="word-display">
-                        <span id="currentWord">Waiting for word...</span>
+                        <span id="currentWord">Lafz ka intezar...</span>
                     </div>
                 </div>
                 
@@ -107,40 +116,40 @@
                             <div class="canvas-overlay" id="canvasOverlay">
                                 <div class="drawing-instructions">
                                     <i class="fas fa-paint-brush"></i>
-                                    <p>You're drawing! Others are guessing...</p>
+                                    <p>Aap draw kar rahe hain — dosray andaza laga rahe hain...</p>
                                 </div>
                             </div>
                         </div>
                         <div class="canvas-controls">
                             <button id="clearCanvasBtn" class="btn btn-small">
-                                <i class="fas fa-eraser"></i> Clear
+                                <i class="fas fa-eraser"></i> صاف کریں
                             </button>
                             <div class="color-picker">
                                 <input type="color" id="colorPicker" value="#000000">
-                                <label for="colorPicker">Color</label>
+                                <label for="colorPicker">رنگ</label>
                             </div>
                             <div class="brush-size">
                                 <input type="range" id="brushSize" min="1" max="20" value="5">
-                                <label for="brushSize">Size</label>
+                                <label for="brushSize">سائز</label>
                             </div>
                         </div>
                     </div>
                     
                     <div class="game-sidebar">
                         <div class="players-panel">
-                            <h3>Players</h3>
+                            <h3>کھلاڑی</h3>
                             <div id="gamePlayersList" class="game-players-list">
                                 <!-- Game players will be added here -->
                             </div>
                         </div>
                         
                         <div class="chat-panel">
-                            <h3>Chat</h3>
+                            <h3>چیٹ</h3>
                             <div id="chatMessages" class="chat-messages">
                                 <!-- Chat messages will be added here -->
                             </div>
                             <div class="chat-input">
-                                <input type="text" id="chatInput" placeholder="Type your guess...">
+                                <input type="text" id="chatInput" placeholder="Apna andaza yahan type karein">
                                 <button id="sendChatBtn" class="btn btn-small">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
@@ -154,19 +163,19 @@
         <!-- Game Over Screen -->
         <div id="gameOverScreen" class="screen">
             <div class="game-over-container">
-                <h2>Game Over!</h2>
+                <h2>Game Khatam!</h2>
                 <div class="final-scores">
-                    <h3>Final Scores</h3>
+                    <h3>Aakhri Scores</h3>
                     <div id="finalScoresList" class="final-scores-list">
                         <!-- Final scores will be added here -->
                     </div>
                 </div>
                 <div class="game-over-controls">
                     <button id="playAgainBtn" class="btn btn-primary">
-                        <i class="fas fa-redo"></i> Play Again
+                        <i class="fas fa-redo"></i> Dobara Khelein
                     </button>
                     <button id="backToLobbyBtn" class="btn btn-secondary">
-                        <i class="fas fa-home"></i> Back to Lobby
+                        <i class="fas fa-home"></i> Lobby Par Wapas
                     </button>
                 </div>
             </div>

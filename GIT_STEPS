@@ -1,0 +1,20 @@
+git status
+git add -A
+git commit -m "UI: Roman‑Urdu translations"
+git checkout -b roman-urdu
+git push -u origin roman-urdu
+# (web) Open repo → Compare & pull request → Create PR → Merge
+# (gh CLI)
+gh pr create --title "Roman-Urdu UI" --body "Translate UI to Roman‑Urdu" --base main --head roman-urdu
+gh pr merge --auto
+
+git fetch origin
+git checkout main
+git pull origin main
+git checkout roman-urdu
+git merge main
+# resolve conflicts in editor (look for <<<<<<< >>>>>>>)
+git add <fixed-files>
+git commit
+git push
+# then create/merge PR
