@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skribbl Clone - Unlimited Players</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
+            <div class="welcome-container">
+                <div class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    <h1>Skribbl Clone</h1>
+                    <p>Unlimited Players • Real-time Drawing • Word Guessing</p>
+                </div>
+                
+                <div class="welcome-form">
+                    <div class="input-group">
+                        <label for="playerName">Your Name</label>
+                        <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+                    </div>
+                    
+                    <div class="welcome-buttons">
+                        <button id="createGameBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create New Game
+                        </button>
+                        <button id="joinGameBtn" class="btn btn-secondary">
+                            <i class="fas fa-sign-in-alt"></i> Join Existing Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Game Modal -->
+        <div id="joinModal" class="modal">
+            <div class="modal-content">
+                <h2>Join Game</h2>
+                <div class="input-group">
+                    <label for="roomCode">Room Code</label>
+                    <input type="text" id="roomCode" placeholder="Enter 6-digit room code" maxlength="6" pattern="[A-Z0-9]{6}">
+                </div>
+                <div class="modal-buttons">
+                    <button id="confirmJoinBtn" class="btn btn-primary">Join Game</button>
+                    <button id="cancelJoinBtn" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lobby Screen -->
+        <div id="lobbyScreen" class="screen">
+            <div class="lobby-container">
+                <div class="lobby-header">
+                    <h2>Game Lobby</h2>
+                    <div class="room-info">
+                        <span class="room-code">Room: <strong id="roomCodeDisplay"></strong></span>
+                        <button id="copyRoomCodeBtn" class="btn btn-small">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="players-section">
+                    <h3>Players (<span id="playerCount">1</span>)</h3>
+                    <div id="playersList" class="players-list">
+                        <!-- Players will be added here -->
+                    </div>
+                </div>
+                
+                <div class="lobby-controls">
+                    <button id="startGameBtn" class="btn btn-primary" disabled>
+                        <i class="fas fa-play"></i> Start Game (Need 2+ Players)
+                    </button>
+                    <button id="leaveLobbyBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Leave Lobby
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="game-info">
+                        <span class="round-info">Round <span id="currentRound">1</span>/<span id="maxRounds">3</span></span>
+                        <span class="time-left">Time: <span id="timeLeft">60</span>s</span>
+                    </div>
+                    <div class="word-display">
+                        <span id="currentWord">Waiting for word...</span>
+                    </div>
+                </div>
+                
+                <div class="game-main">
+                    <div class="canvas-section">
+                        <div class="canvas-container">
+                            <canvas id="drawingCanvas" width="800" height="600"></canvas>
+                            <div class="canvas-overlay" id="canvasOverlay">
+                                <div class="drawing-instructions">
+                                    <i class="fas fa-paint-brush"></i>
+                                    <p>You're drawing! Others are guessing...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="canvas-controls">
+                            <button id="clearCanvasBtn" class="btn btn-small">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                            <div class="color-picker">
+                                <input type="color" id="colorPicker" value="#000000">
+                                <label for="colorPicker">Color</label>
+                            </div>
+                            <div class="brush-size">
+                                <input type="range" id="brushSize" min="1" max="20" value="5">
+                                <label for="brushSize">Size</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-sidebar">
+                        <div class="players-panel">
+                            <h3>Players</h3>
+                            <div id="gamePlayersList" class="game-players-list">
+                                <!-- Game players will be added here -->
+                            </div>
+                        </div>
+                        
+                        <div class="chat-panel">
+                            <h3>Chat</h3>
+                            <div id="chatMessages" class="chat-messages">
+                                <!-- Chat messages will be added here -->
+                            </div>
+                            <div class="chat-input">
+                                <input type="text" id="chatInput" placeholder="Type your guess...">
+                                <button id="sendChatBtn" class="btn btn-small">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="screen">
+            <div class="game-over-container">
+                <h2>Game Over!</h2>
+                <div class="final-scores">
+                    <h3>Final Scores</h3>
+                    <div id="finalScoresList" class="final-scores-list">
+                        <!-- Final scores will be added here -->
+                    </div>
+                </div>
+                <div class="game-over-controls">
+                    <button id="playAgainBtn" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Play Again
+                    </button>
+                    <button id="backToLobbyBtn" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Back to Lobby
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification System -->
+        <div id="notifications" class="notifications"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
