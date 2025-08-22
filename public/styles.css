@@ -380,18 +380,19 @@ body {
     padding: 20px;
 }
 
-.canvas-container {
-    position: relative;
-    margin-bottom: 20px;
-}
-
+/* Canvas Styles */
 #drawingCanvas {
-    border: 3px solid #e1e5e9;
-    border-radius: 15px;
-    background: white;
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
     cursor: crosshair;
     display: block;
     margin: 0 auto;
+}
+
+.canvas-container {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .canvas-overlay {
@@ -404,7 +405,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 15px;
+    border-radius: 8px;
     pointer-events: none;
 }
 
@@ -429,7 +430,11 @@ body {
     gap: 20px;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
 }
 
 .color-picker, .brush-size {
@@ -443,12 +448,35 @@ body {
     width: 40px;
     height: 40px;
     border: none;
-    border-radius: 50%;
+    border-radius: 8px;
     cursor: pointer;
 }
 
 .brush-size input[type="range"] {
     width: 100px;
+    height: 6px;
+    border-radius: 3px;
+    background: #e9ecef;
+    outline: none;
+    cursor: pointer;
+}
+
+.brush-size input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #e74c3c;
+    cursor: pointer;
+}
+
+.brush-size input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #e74c3c;
+    cursor: pointer;
+    border: none;
 }
 
 /* Game Sidebar */

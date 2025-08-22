@@ -199,11 +199,11 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('draw', ({ roomId, x, y, drawing }) => {
+  socket.on('draw', ({ roomId, x, y, lastX, lastY, drawing }) => {
     const game = games.get(roomId);
     
     if (game && game.currentDrawer === socket.id && game.gameState === 'playing') {
-      socket.to(roomId).emit('draw', { x, y, drawing });
+      socket.to(roomId).emit('draw', { x, y, lastX, lastY, drawing });
     }
   });
 

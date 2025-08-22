@@ -6,6 +6,7 @@ let isDrawingMode = false;
 let drawingContext;
 let lastX = 0;
 let lastY = 0;
+let isReceivingDraw = false; // Track if we're receiving drawing data
 
 // DOM elements
 const screens = {
@@ -97,6 +98,11 @@ function setupCanvas() {
     drawingContext = elements.drawingCanvas.getContext('2d');
     drawingContext.lineCap = 'round';
     drawingContext.lineJoin = 'round';
+    
+    // Set canvas background to white
+    drawingContext.fillStyle = '#ffffff';
+    drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+    
     updateBrush();
 }
 
@@ -140,6 +146,8 @@ function draw(e) {
         roomId: currentGame.roomId,
         x: x / elements.drawingCanvas.width,
         y: y / elements.drawingCanvas.height,
+        lastX: lastX / elements.drawingCanvas.width,
+        lastY: lastY / elements.drawingCanvas.height,
         drawing: true
     });
     
@@ -165,7 +173,11 @@ function handleTouch(e) {
 function clearCanvas() {
     if (!isDrawingMode) return;
     
+    // Clear and reset to white background
     drawingContext.clearRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+    drawingContext.fillStyle = '#ffffff';
+    drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+    
     socket.emit('clearCanvas', currentGame.roomId);
 }
 
@@ -288,27 +300,40 @@ function connectSocket() {
         currentGame = gameData;
         showScreen('game');
         updateGame();
+        
+        // Reset canvas to white background when game starts
+        drawingContext.fillStyle = '#ffffff';
+        drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+        
         showNotification('Game started!', 'success');
     });
     
-    socket.on('draw', ({ x, y, drawing }) => {
+    socket.on('draw', ({ x, y, lastX: remoteLastX, lastY: remoteLastY, drawing }) => {
         if (drawing && !isDrawingMode) {
+            // Convert normalized coordinates back to canvas coordinates
             const canvasX = x * elements.drawingCanvas.width;
             const canvasY = y * elements.drawingCanvas.height;
+            const canvasLastX = remoteLastX * elements.drawingCanvas.width;
+            const canvasLastY = remoteLastY * elements.drawingCanvas.height;
             
+            // Set the drawing context properties to match the drawer's settings
+            drawingContext.strokeStyle = '#000000'; // Default color for viewers
+            drawingContext.lineWidth = 5; // Default brush size for viewers
+            
+            // Draw the line
             drawingContext.beginPath();
-            drawingContext.moveTo(lastX, lastY);
+            drawingContext.moveTo(canvasLastX, canvasLastY);
             drawingContext.lineTo(canvasX, canvasY);
             drawingContext.stroke();
-            
-            lastX = canvasX;
-            lastY = canvasY;
         }
     });
     
     socket.on('clearCanvas', () => {
         if (!isDrawingMode) {
+            // Clear and reset to white background
             drawingContext.clearRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+            drawingContext.fillStyle = '#ffffff';
+            drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
         }
     });
     
@@ -325,6 +350,11 @@ function connectSocket() {
             updateGameOver();
         } else {
             updateGame();
+            
+            // Reset canvas to white background for new round
+            drawingContext.fillStyle = '#ffffff';
+            drawingContext.fillRect(0, 0, elements.drawingCanvas.width, elements.drawingCanvas.height);
+            
             showNotification('Round ended!', 'info');
         }
     });
