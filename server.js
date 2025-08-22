@@ -3,18 +3,62 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const server = http.createServer(app);
+
+// Allowed origins: set ALLOWED_ORIGINS in env as comma-separated list, default to Cloud Run URL + localhost
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim())
+  : ['https://skribbl-premed-rnnx77oawa-ew.a.run.app', 'http://localhost:3000'];
+
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: ALLOWED_ORIGINS.includes('*') ? '*' : ALLOWED_ORIGINS,
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
-app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
+// Security middlewares
+app.use(helmet());
+
+// Basic rate limiter for HTTP endpoints
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 120, // limit each IP to 120 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use(limiter);
+
+// Enforce HTTPS when behind a proxy/load balancer (Cloud Run sets x-forwarded-proto)
+app.use((req, res, next) => {
+  const proto = req.headers['x-forwarded-proto'];
+  if (proto && proto !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
+
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // allow non-browser requests with no origin (like curl)
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes('*') || ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+app.use(express.static(path.join(__dirname, 'public'), { etag: true, maxAge: '0d' }));
 
 // Game state
 const games = new Map();
@@ -150,6 +194,29 @@ class Game {
     };
   }
 }
+
+// Simple in-memory connection protection for socket.io
+const connectionCounts = new Map();
+io.use((socket, next) => {
+  const origin = socket.handshake.headers.origin;
+  if (!ALLOWED_ORIGINS.includes('*') && origin && !ALLOWED_ORIGINS.includes(origin)) {
+    return next(new Error('Origin not allowed'));
+  }
+
+  const ip = socket.handshake.address || socket.request.connection.remoteAddress || socket.handshake.headers['x-forwarded-for'] || 'unknown';
+  const count = connectionCounts.get(ip) || 0;
+  if (count > 100) {
+    return next(new Error('Too many connections from this IP'));
+  }
+  connectionCounts.set(ip, count + 1);
+
+  socket.on('disconnect', () => {
+    const c = connectionCounts.get(ip) || 1;
+    connectionCounts.set(ip, Math.max(0, c - 1));
+  });
+
+  next();
+});
 
 // Socket connection handling
 io.on('connection', (socket) => {
